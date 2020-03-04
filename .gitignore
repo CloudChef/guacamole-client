@@ -1,2 +1,31 @@
-*~
-target/
+# OS X FS metadata
+.DS_Store
+# vim backups of files that are open at time of commit
+*.swp
+.tmp
+.settings/*
+/bin
+target
+test-output
+.classpath
+.project
+.idea
+.settings
+*.iml
+*/tmp
+tmp/
+*.git.properties
+*.espressostorage
+*.ipr
+*.iws
+.springBeans
+.iml
+
+# jrebel
+rebel.xml
+.rebel.xml.bak
+
+# maven-release-plugin artifacts
+/release.properties
+pom.xml.releaseBackup
+.pydevproject
