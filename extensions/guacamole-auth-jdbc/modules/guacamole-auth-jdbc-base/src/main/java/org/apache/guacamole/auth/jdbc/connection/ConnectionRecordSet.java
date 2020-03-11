@@ -46,12 +46,12 @@ public class ConnectionRecordSet extends ModeledActivityRecordSet<ConnectionReco
     @Override
     protected Collection<ConnectionRecord> retrieveHistory(
             AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+            List<ActivityRecordSortPredicate> sortPredicates, int limit,String tenantId)
             throws GuacamoleException {
 
         // Retrieve history from database
         return connectionService.retrieveHistory(getCurrentUser(),
-                requiredContents, sortPredicates, limit);
+                requiredContents, sortPredicates, limit,tenantId);
 
     }
 

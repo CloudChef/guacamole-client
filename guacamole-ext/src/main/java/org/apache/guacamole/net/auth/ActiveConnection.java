@@ -167,5 +167,11 @@ public interface ActiveConnection extends Identifiable, Connectable,
     default int getActiveConnections() {
         return 0;
     }
-    
+
+    String getCmpUserId();
+
+    String getGuacadAddress();
+
+    String getTenantId();
+
 }

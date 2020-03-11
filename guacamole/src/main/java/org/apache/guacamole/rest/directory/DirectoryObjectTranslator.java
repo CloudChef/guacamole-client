@@ -152,6 +152,15 @@ public abstract class DirectoryObjectTranslator<InternalType extends Identifiabl
             }
         }
 
+        String cmpUserId = attributes.get("cmpUserId");
+        String tenantId = attributes.get("tenantId");
+        if (cmpUserId != null || cmpUserId != "") {
+            filtered.put("cmpUserId", cmpUserId);
+        }
+        if (tenantId != null || tenantId != "") {
+            filtered.put("tenantId", tenantId);
+        }
+
         return filtered;
 
     }

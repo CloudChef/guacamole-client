@@ -40,6 +40,8 @@
         <result column="connection_weight"        property="connectionWeight"      jdbcType="INTEGER"/>
         <result column="failover_only"            property="failoverOnly"          jdbcType="BOOLEAN"/>
         <result column="last_active"              property="lastActive"            jdbcType="TIMESTAMP"/>
+        <result column="cmp_user_id"            property="cmpUserId"              jdbcType="VARCHAR"/>
+        <result column="tenant_id"                property="tenantId"               jdbcType="VARCHAR"/>
 
         <!-- Associated sharing profiles -->
         <collection property="sharingProfileIdentifiers" resultSet="sharingProfiles" ofType="java.lang.String"
@@ -117,7 +119,9 @@
             proxy_encryption_method,
             connection_weight,
             failover_only,
-            MAX(start_date) AS last_active
+            MAX(start_date) AS last_active,
+        guacamole_connection.cmp_user_id,
+        guacamole_connection.tenant_id
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE guacamole_connection.connection_id IN
@@ -164,7 +168,9 @@
             proxy_encryption_method,
             connection_weight,
             failover_only,
-            MAX(start_date) AS last_active
+            MAX(start_date) AS last_active,
+            guacamole_connection.cmp_user_id,
+            guacamole_connection.tenant_id
         FROM guacamole_connection
         JOIN guacamole_connection_permission ON guacamole_connection_permission.connection_id = guacamole_connection.connection_id
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
@@ -231,7 +237,9 @@
             proxy_encryption_method,
             connection_weight,
             failover_only,
-            MAX(start_date) AS last_active
+            MAX(start_date) AS last_active,
+            guacamole_connection.cmp_user_id,
+            guacamole_connection.tenant_id
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE 
@@ -262,7 +270,9 @@
             proxy_port,
             proxy_encryption_method,
             connection_weight,
-            failover_only
+            failover_only,
+            cmp_user_id,
+            tenant_id
         )
         VALUES (
             #{object.name,jdbcType=VARCHAR},
@@ -274,7 +284,9 @@
             #{object.proxyPort,jdbcType=INTEGER},
             #{object.proxyEncryptionMethod,jdbcType=VARCHAR},
             #{object.connectionWeight,jdbcType=INTEGER},
-            #{object.failoverOnly,jdbcType=BOOLEAN}
+            #{object.failoverOnly,jdbcType=BOOLEAN},
+            #{object.cmpUserId,jdbcType=VARCHAR},
+            #{object.tenantId,jdbcType=INTEGER}
         )
 
     </insert>

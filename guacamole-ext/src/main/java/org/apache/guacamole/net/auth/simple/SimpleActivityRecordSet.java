@@ -54,6 +54,11 @@ public class SimpleActivityRecordSet<RecordType extends ActivityRecord>
     }
 
     @Override
+    public ActivityRecordSet<RecordType> tenantId(String tenantId) throws GuacamoleException {
+        return null;
+    }
+
+    @Override
     public ActivityRecordSet<RecordType> sort(SortableProperty property,
             boolean desc) throws GuacamoleException {
         return this;

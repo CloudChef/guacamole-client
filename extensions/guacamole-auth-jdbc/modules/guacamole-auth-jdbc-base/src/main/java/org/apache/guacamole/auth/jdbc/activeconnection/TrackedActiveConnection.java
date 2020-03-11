@@ -100,6 +100,10 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
      */
     private boolean connectable;
 
+    private String cmpUserId;
+    private String guacadAddress;
+    private String tenantId;
+
     /**
      * Initializes this TrackedActiveConnection, copying the data associated
      * with the given active connection record. At a minimum, the identifier
@@ -131,12 +135,15 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
         super.init(currentUser);
         this.connectionRecord = activeConnectionRecord;
         this.connectable      = connectable;
-        
+
         // Copy all non-sensitive data from given record
         this.connection               = activeConnectionRecord.getConnection();
         this.sharingProfileIdentifier = activeConnectionRecord.getSharingProfileIdentifier();
         this.identifier               = activeConnectionRecord.getUUID().toString();
         this.startDate                = activeConnectionRecord.getStartDate();
+        this.cmpUserId                = activeConnectionRecord.getCmpUserId();
+        this.guacadAddress            = activeConnectionRecord.getGuacadAddress();
+        this.tenantId                 = activeConnectionRecord.getTenantId();
 
         // Include sensitive data, too, if requested
         if (includeSensitiveInformation) {
@@ -279,6 +286,21 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
     @Override
     public int getActiveConnections() {
         return 0;
+    }
+
+    @Override
+    public String getCmpUserId() {
+        return cmpUserId;
+    }
+
+    @Override
+    public String getGuacadAddress() {
+        return guacadAddress;
+    }
+
+    @Override
+    public String getTenantId() {
+        return tenantId;
     }
 
 }

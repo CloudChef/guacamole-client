@@ -22,6 +22,7 @@ package org.apache.guacamole.net.auth.simple;
 import java.util.Collection;
 import java.util.Collections;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.net.auth.ActivityRecordSet;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 
 /**
@@ -50,6 +51,11 @@ public class SimpleConnectionRecordSet implements org.apache.guacamole.net.auth.
     public org.apache.guacamole.net.auth.ConnectionRecordSet limit(int limit)
             throws GuacamoleException {
         return this;
+    }
+
+    @Override
+    public ActivityRecordSet<ConnectionRecord> tenantId(String tenantId) throws GuacamoleException {
+        return null;
     }
 
     @Override

@@ -55,6 +55,8 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
      * to asCollection().
      */
     private int limit = Integer.MAX_VALUE;
+
+    private String tenantId;
     
     /**
      * A list of predicates to apply while sorting the resulting records,
@@ -94,13 +96,13 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             AuthenticatedUser user,
             Set<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates,
-            int limit) throws GuacamoleException;
+            int limit,String tenantId) throws GuacamoleException;
 
     @Override
     public Collection<RecordType> asCollection()
             throws GuacamoleException {
         return retrieveHistory(getCurrentUser(), requiredContents,
-                sortPredicates, limit);
+                sortPredicates, limit,tenantId);
     }
 
     @Override
@@ -113,6 +115,12 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
     @Override
     public ModeledActivityRecordSet<RecordType> limit(int limit) throws GuacamoleException {
         this.limit = Math.min(this.limit, limit);
+        return this;
+    }
+
+    @Override
+    public ActivityRecordSet<RecordType> tenantId(String tenantId) throws GuacamoleException {
+        this.tenantId = tenantId;
         return this;
     }
 

@@ -79,7 +79,7 @@ public interface ConnectionRecordMapper {
      */
     List<ConnectionRecordModel> search(@Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
-            @Param("limit") int limit);
+            @Param("limit") int limit,@Param("tenantId") String tenantId);
 
     /**
      * Searches for up to <code>limit</code> connection records that contain

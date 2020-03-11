@@ -91,6 +91,9 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
      */
     public static final String GUACD_ENCRYPTION_VALUE_SSL = "ssl";
 
+    public static final String CMP_USER_ID = "cmpUserId";
+    public static final String TENANT_ID = "tenantId";
+
     /**
      * All attributes which describe the configuration of the guacd instance
      * which will be used to connect to the remote desktop described by this
@@ -169,7 +172,9 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
                 MAX_CONNECTIONS_NAME,
                 MAX_CONNECTIONS_PER_USER_NAME,
                 CONNECTION_WEIGHT,
-                FAILOVER_ONLY_NAME
+                FAILOVER_ONLY_NAME,
+                    CMP_USER_ID,
+                    TENANT_ID
             )));
 
     /**
@@ -378,6 +383,14 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
 
         // Translate failover-only attribute
         getModel().setFailoverOnly("true".equals(attributes.get(FAILOVER_ONLY_NAME)));
+
+        if(attributes.get(CMP_USER_ID) != null){
+            getModel().setCmpUserId(TextField.parse(attributes.get(CMP_USER_ID)));
+        }
+
+        if(attributes.get(TENANT_ID) != null){
+            getModel().setTenantId(TextField.parse(attributes.get(TENANT_ID)));
+        }
 
     }
 

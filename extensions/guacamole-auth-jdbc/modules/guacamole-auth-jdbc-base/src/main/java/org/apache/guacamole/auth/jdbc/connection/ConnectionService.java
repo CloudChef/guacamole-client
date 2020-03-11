@@ -465,7 +465,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
      */
     public List<ConnectionRecord> retrieveHistory(ModeledAuthenticatedUser user,
             Collection<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+            List<ActivityRecordSortPredicate> sortPredicates, int limit,String tenantId)
             throws GuacamoleException {
 
         List<ConnectionRecordModel> searchResults;
@@ -473,7 +473,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
         // Bypass permission checks if the user is a system admin
         if (user.getUser().isAdministrator())
             searchResults = connectionRecordMapper.search(requiredContents,
-                    sortPredicates, limit);
+                    sortPredicates, limit,tenantId);
 
         // Otherwise only return explicitly readable history records
         else

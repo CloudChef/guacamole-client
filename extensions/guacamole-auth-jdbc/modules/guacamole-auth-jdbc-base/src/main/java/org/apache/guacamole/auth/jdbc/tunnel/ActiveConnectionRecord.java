@@ -321,6 +321,51 @@ public class ActiveConnectionRecord implements ConnectionRecord {
     }
 
     @Override
+    public Integer getRecordID() {
+        return null;
+    }
+
+    @Override
+    public String getRecordingPath() {
+        return null;
+    }
+
+    @Override
+    public String getRecordingName() {
+        return null;
+    }
+
+    @Override
+    public String getTypescriptPath() {
+        return null;
+    }
+
+    @Override
+    public String getTypescriptName() {
+        return null;
+    }
+
+    @Override
+    public String getExts() {
+        return null;
+    }
+
+    @Override
+    public String getCmpUserId() {
+        return connection.getModel().getCmpUserId();
+    }
+
+    @Override
+    public String getGuacadAddress() {
+        return connection.getModel().getProxyHostname();
+    }
+
+    @Override
+    public String getTenantId() {
+        return connection.getModel().getTenantId();
+    }
+
+    @Override
     public Date getStartDate() {
         return startDate;
     }

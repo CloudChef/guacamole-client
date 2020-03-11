@@ -59,6 +59,10 @@ public class APIActiveConnection {
      */
     private final boolean connectable;
 
+    private String cmpUserId;
+    private String guacadAddress;
+    private String tenantId;
+
     /**
      * Creates a new APIActiveConnection, copying the information from the given
      * active connection.
@@ -73,6 +77,9 @@ public class APIActiveConnection {
         this.remoteHost           = connection.getRemoteHost();
         this.username             = connection.getUsername();
         this.connectable          = connection.isConnectable();
+        this.cmpUserId            = connection.getCmpUserId();
+        this.guacadAddress        = connection.getGuacadAddress();
+        this.tenantId             = connection.getTenantId();
     }
 
     /**
@@ -139,4 +146,27 @@ public class APIActiveConnection {
         return connectable;
     }
 
+    public String getCmpUserId() {
+        return cmpUserId;
+    }
+
+    public void setCmpUserId(String cmpUserId) {
+        this.cmpUserId = cmpUserId;
+    }
+
+    public String getGuacadAddress() {
+        return guacadAddress;
+    }
+
+    public void setGuacadAddress(String guacadAddress) {
+        this.guacadAddress = guacadAddress;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 }

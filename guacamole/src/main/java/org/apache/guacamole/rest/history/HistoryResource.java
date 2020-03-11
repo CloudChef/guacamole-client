@@ -21,6 +21,7 @@ package org.apache.guacamole.rest.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -88,6 +89,7 @@ public class HistoryResource {
     @GET
     @Path("connections")
     public List<APIConnectionRecord> getConnectionHistory(
+            @QueryParam("tenantId")String tenantId,
             @QueryParam("contains") List<String> requiredContents,
             @QueryParam("order") List<APISortPredicate> sortPredicates)
             throws GuacamoleException {
@@ -106,7 +108,9 @@ public class HistoryResource {
             history = history.sort(predicate.getProperty(), predicate.isDescending());
 
         // Limit to maximum result size
-        history = history.limit(MAXIMUM_HISTORY_SIZE);
+       // history = history.limit(MAXIMUM_HISTORY_SIZE);
+
+        history = history.tenantId(tenantId);
 
         // Convert record set to collection of API connection records
         List<APIConnectionRecord> apiRecords = new ArrayList<APIConnectionRecord>();

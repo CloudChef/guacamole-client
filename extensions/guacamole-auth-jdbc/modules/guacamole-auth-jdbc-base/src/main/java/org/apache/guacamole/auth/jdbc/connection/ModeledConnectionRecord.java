@@ -67,4 +67,49 @@ public class ModeledConnectionRecord extends ModeledActivityRecord
         return model.getSharingProfileName();
     }
 
+    @Override
+    public Integer getRecordID() {
+        return model.getRecordID();
+    }
+
+    @Override
+    public String getRecordingPath() {
+        return model.getRecordingPath();
+    }
+
+    @Override
+    public String getRecordingName() {
+        return model.getRecordingName();
+    }
+
+    @Override
+    public String getTypescriptPath() {
+        return model.getTypescriptPath();
+    }
+
+    @Override
+    public String getTypescriptName() {
+        return model.getTypescriptName();
+    }
+
+    @Override
+    public String getExts() {
+        return model.getExts();
+    }
+
+    @Override
+    public String getCmpUserId() {
+        return model.getCmpUserId();
+    }
+
+    @Override
+    public String getGuacadAddress() {
+        return model.getGuacadAddress();
+    }
+
+    @Override
+    public String getTenantId() {
+        return model.getTenantId();
+    }
+
 }

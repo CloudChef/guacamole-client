@@ -99,6 +99,9 @@ public class ConnectionModel extends ChildObjectModel {
      */
     private Date lastActive;
 
+    private String cmpUserId;
+    private String tenantId;
+
     /**
      * Creates a new, empty connection.
      */
@@ -392,4 +395,19 @@ public class ConnectionModel extends ChildObjectModel {
         throw new UnsupportedOperationException("Connection identifiers are derived from IDs. They cannot be set.");
     }
 
+    public String getCmpUserId() {
+        return cmpUserId;
+    }
+
+    public void setCmpUserId(String cmpUserId) {
+        this.cmpUserId = cmpUserId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 }
