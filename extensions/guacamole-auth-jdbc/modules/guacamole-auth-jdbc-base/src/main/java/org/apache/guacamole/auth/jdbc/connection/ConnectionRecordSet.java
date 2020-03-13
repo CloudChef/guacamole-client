@@ -27,6 +27,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
 import org.apache.guacamole.auth.jdbc.base.ModeledActivityRecordSet;
+import org.apache.guacamole.auth.jdbc.base.RecordAndSearchTerm;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 
@@ -46,12 +47,12 @@ public class ConnectionRecordSet extends ModeledActivityRecordSet<ConnectionReco
     @Override
     protected Collection<ConnectionRecord> retrieveHistory(
             AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit,String tenantId)
+            List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm recordAndSearchTerm)
             throws GuacamoleException {
 
         // Retrieve history from database
         return connectionService.retrieveHistory(getCurrentUser(),
-                requiredContents, sortPredicates, limit,tenantId);
+                requiredContents, sortPredicates, limit,recordAndSearchTerm);
 
     }
 

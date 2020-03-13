@@ -60,8 +60,11 @@ public class APIActiveConnection {
     private final boolean connectable;
 
     private String cmpUserId;
-    private String guacadAddress;
+    private String guacadCloudEntryId;
     private String tenantId;
+    private String protocolName;
+    private String ipAddress;
+    private String vmName;
 
     /**
      * Creates a new APIActiveConnection, copying the information from the given
@@ -78,8 +81,11 @@ public class APIActiveConnection {
         this.username             = connection.getUsername();
         this.connectable          = connection.isConnectable();
         this.cmpUserId            = connection.getCmpUserId();
-        this.guacadAddress        = connection.getGuacadAddress();
+        this.guacadCloudEntryId = connection.getGuacadCloudEntryId();
         this.tenantId             = connection.getTenantId();
+        this.protocolName         = connection.getProtocolName();
+        this.ipAddress            = connection.getIpAddress();
+        this.vmName               = connection.getVmName();
     }
 
     /**
@@ -154,12 +160,12 @@ public class APIActiveConnection {
         this.cmpUserId = cmpUserId;
     }
 
-    public String getGuacadAddress() {
-        return guacadAddress;
+    public String getGuacadCloudEntryId() {
+        return guacadCloudEntryId;
     }
 
-    public void setGuacadAddress(String guacadAddress) {
-        this.guacadAddress = guacadAddress;
+    public void setGuacadCloudEntryId(String guacadCloudEntryId) {
+        this.guacadCloudEntryId = guacadCloudEntryId;
     }
 
     public String getTenantId() {
@@ -168,5 +174,29 @@ public class APIActiveConnection {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getProtocolName() {
+        return protocolName;
+    }
+
+    public void setProtocolName(String protocolName) {
+        this.protocolName = protocolName;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getVmName() {
+        return vmName;
+    }
+
+    public void setVmName(String vmName) {
+        this.vmName = vmName;
     }
 }

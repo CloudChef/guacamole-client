@@ -84,8 +84,14 @@ public interface ConnectionRecord extends ActivityRecord {
 
     String getCmpUserId();
 
-    String getGuacadAddress();
+    String getGuacadCloudEntryId();
 
     String getTenantId();
+
+    String getProtocolName();
+
+    String getIpAddress();
+
+    String getVmName();
 
 }

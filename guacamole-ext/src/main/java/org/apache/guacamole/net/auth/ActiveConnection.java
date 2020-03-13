@@ -170,8 +170,14 @@ public interface ActiveConnection extends Identifiable, Connectable,
 
     String getCmpUserId();
 
-    String getGuacadAddress();
+    String getGuacadCloudEntryId();
 
     String getTenantId();
+
+    String getProtocolName();
+
+    String getIpAddress();
+
+    String getVmName();
 
 }

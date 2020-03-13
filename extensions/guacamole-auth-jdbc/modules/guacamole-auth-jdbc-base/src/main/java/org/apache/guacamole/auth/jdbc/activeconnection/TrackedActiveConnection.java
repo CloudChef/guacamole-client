@@ -101,8 +101,11 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
     private boolean connectable;
 
     private String cmpUserId;
-    private String guacadAddress;
+    private String guacadCloudEntryId;
     private String tenantId;
+    private String protocolName;
+    private String ipAddress;
+    private String vmName;
 
     /**
      * Initializes this TrackedActiveConnection, copying the data associated
@@ -142,8 +145,11 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
         this.identifier               = activeConnectionRecord.getUUID().toString();
         this.startDate                = activeConnectionRecord.getStartDate();
         this.cmpUserId                = activeConnectionRecord.getCmpUserId();
-        this.guacadAddress            = activeConnectionRecord.getGuacadAddress();
+        this.guacadCloudEntryId = activeConnectionRecord.getGuacadCloudEntryId();
         this.tenantId                 = activeConnectionRecord.getTenantId();
+        this.protocolName             = activeConnectionRecord.getProtocolName();
+        this.ipAddress                = activeConnectionRecord.getIpAddress();
+        this.vmName                   = activeConnectionRecord.getVmName();
 
         // Include sensitive data, too, if requested
         if (includeSensitiveInformation) {
@@ -294,8 +300,8 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
     }
 
     @Override
-    public String getGuacadAddress() {
-        return guacadAddress;
+    public String getGuacadCloudEntryId() {
+        return guacadCloudEntryId;
     }
 
     @Override
@@ -303,4 +309,23 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
         return tenantId;
     }
 
+
+    @Override
+    public String getProtocolName() {
+        return protocolName;
+    }
+
+    @Override
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    @Override
+    public String getVmName() {
+        return vmName;
+    }
+
+    public void setProtocolName(String protocolName) {
+        this.protocolName = protocolName;
+    }
 }

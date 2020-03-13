@@ -32,7 +32,9 @@
         <result column="exts"                 property="exts"                     jdbcType="VARCHAR"/>
         <result column="cmp_user_id"          property="cmpUserId"                jdbcType="VARCHAR"/>
         <result column="tenant_id"            property="tenantId"                jdbcType="VARCHAR"/>
-        <result column="guacad_address"       property="guacadAddress"            jdbcType="VARCHAR"/>
+        <result column="guacad_cloud_entry_id" property="guacadCloudEntryId"            jdbcType="VARCHAR"/>
+        <result column="ip_address"            property="ipAddress"               jdbcType="VARCHAR"/>
+        <result column="vm_name"            property="vmName"                     jdbcType="VARCHAR"/>
         <result column="protocol_name"        property="protocolName"                 jdbcType="VARCHAR"/>
         <result column="connection_id"        property="connectionIdentifier"     jdbcType="INTEGER"/>
         <result column="connection_name"      property="connectionName"           jdbcType="VARCHAR"/>
@@ -57,7 +59,9 @@
             guacamole_connection_history.exts,
             guacamole_connection_history.cmp_user_id,
             guacamole_connection_history.tenant_id,
-            guacamole_connection_history.guacad_address,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
             guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,
@@ -88,7 +92,9 @@
             exts,
             cmp_user_id,
             tenant_id,
-            guacad_address,
+            guacad_cloud_entry_id,
+            ip_address,
+            vm_name,
             protocol_name,
             connection_id,
             connection_name,
@@ -108,7 +114,9 @@
             #{record.exts,jdbcType=VARCHAR},
             #{record.cmpUserId,jdbcType=VARCHAR},
             #{record.tenantId,jdbcType=VARCHAR},
-            #{record.guacadAddress,jdbcType=VARCHAR},
+            #{record.guacadCloudEntryId,jdbcType=VARCHAR},
+            #{record.ipAddress,jdbcType=VARCHAR},
+            #{record.vmName,jdbcType=VARCHAR},
             #{record.protocolName,jdbcType=VARCHAR},
             #{record.connectionIdentifier,jdbcType=VARCHAR},
             #{record.connectionName,jdbcType=VARCHAR},
@@ -139,7 +147,9 @@
             guacamole_connection_history.exts,
             guacamole_connection_history.cmp_user_id,
             guacamole_connection_history.tenant_id,
-            guacamole_connection_history.guacad_address,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
             guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,
@@ -154,30 +164,45 @@
         LEFT JOIN guacamole_connection ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         LEFT JOIN guacamole_user       ON guacamole_connection_history.user_id       = guacamole_user.user_id
         where 1=1
-        <if test="tenantId != null and tenantId !=''">
-            AND guacamole_connection_history.tenant_id = #{tenantId,jdbcType=VARCHAR}
+
+        <if test="recordAndSearchTerm != null">
+            <if test="recordAndSearchTerm.tenantId != null and recordAndSearchTerm.tenantId !=''">
+                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.tenantId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordAndSearchTerm.startDate != null and recordAndSearchTerm.endDate != null">
+                AND start_date BETWEEN #{recordAndSearchTerm.startDate,jdbcType=TIMESTAMP} AND #{recordAndSearchTerm.endDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="recordAndSearchTerm.protocolName != null and recordAndSearchTerm.protocolName !=''">
+                AND guacamole_connection_history.protocol_name = #{recordAndSearchTerm.protocolName,jdbcType=VARCHAR}
+            </if>
+            <if test="recordAndSearchTerm.guacadCloudEntryId != null and recordAndSearchTerm.guacadCloudEntryId !=''">
+                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.guacadCloudEntryId,jdbcType=VARCHAR}
+            </if>
         </if>
+
 
         <!-- Search terms -->
         <foreach collection="terms" item="term"
                  open=" AND " separator=" AND ">
             (
+              guacamole_connection_history.ip_address like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+            OR
+               guacamole_connection_history.vm_name like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+<!--                guacamole_connection_history.user_id IN (-->
+<!--                    SELECT user_id-->
+<!--                    FROM guacamole_user-->
+<!--                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN username) > 0-->
+<!--                )-->
 
-                guacamole_connection_history.user_id IN (
-                    SELECT user_id
-                    FROM guacamole_user
-                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN username) > 0
-                )
+<!--                OR guacamole_connection_history.connection_id IN (-->
+<!--                    SELECT connection_id-->
+<!--                    FROM guacamole_connection-->
+<!--                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN connection_name) > 0-->
+<!--                )-->
 
-                OR guacamole_connection_history.connection_id IN (
-                    SELECT connection_id
-                    FROM guacamole_connection
-                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN connection_name) > 0
-                )
-
-                <if test="term.startDate != null and term.endDate != null">
-                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
-                </if>
+<!--                <if test="term.startDate != null and term.endDate != null">-->
+<!--                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}-->
+<!--                </if>-->
 
             )
         </foreach>
@@ -211,7 +236,9 @@
             guacamole_connection_history.exts,
             guacamole_connection_history.cmp_user_id,
             guacamole_connection_history.tenant_id,
-            guacamole_connection_history.guacad_address,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
             guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,

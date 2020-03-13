@@ -19,16 +19,20 @@
 
 package org.apache.guacamole.auth.jdbc.base;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.net.SSLGuacamoleSocket;
 import org.apache.guacamole.net.auth.ActivityRecord;
 import org.apache.guacamole.net.auth.ActivityRecordSet;
-import org.apache.guacamole.net.auth.ActivityRecordSet.SortableProperty;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JDBC implementation of ActivityRecordSet. Calls to asCollection() will
@@ -40,6 +44,9 @@ import org.apache.guacamole.net.auth.AuthenticatedUser;
  */
 public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord>
         extends RestrictedObject implements ActivityRecordSet<RecordType> {
+
+    private Logger logger = LoggerFactory.getLogger(ModeledActivityRecordSet.class);
+
 
     /**
      * The set of strings that each must occur somewhere within the returned 
@@ -57,6 +64,8 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
     private int limit = Integer.MAX_VALUE;
 
     private String tenantId;
+
+    private RecordAndSearchTerm recordAndSearchTerm;
     
     /**
      * A list of predicates to apply while sorting the resulting records,
@@ -96,13 +105,13 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             AuthenticatedUser user,
             Set<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates,
-            int limit,String tenantId) throws GuacamoleException;
+            int limit,RecordAndSearchTerm recordAndSearchTerm) throws GuacamoleException;
 
     @Override
     public Collection<RecordType> asCollection()
             throws GuacamoleException {
         return retrieveHistory(getCurrentUser(), requiredContents,
-                sortPredicates, limit,tenantId);
+                sortPredicates, limit,recordAndSearchTerm);
     }
 
     @Override
@@ -123,6 +132,24 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
         this.tenantId = tenantId;
         return this;
     }
+
+    @Override
+    public ActivityRecordSet<RecordType> recordAndSearchTerm(String recordAndSearchTermStr) throws GuacamoleException {
+        if (recordAndSearchTermStr != null && recordAndSearchTermStr != "") {
+            logger.info("Record and search term input json:{}", recordAndSearchTermStr);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                this.recordAndSearchTerm = mapper.readValue(recordAndSearchTermStr, RecordAndSearchTerm.class);
+                if (recordAndSearchTerm.getQueryString() != null && recordAndSearchTerm.getQueryString() != "") {
+                    this.contains(recordAndSearchTerm.getQueryString());
+                }
+            } catch (IOException e) {
+                logger.info("Record and search term parse json error:{}", e);
+            }
+        }
+        return this;
+    }
+
 
     @Override
     public ModeledActivityRecordSet<RecordType> sort(SortableProperty property, boolean desc)

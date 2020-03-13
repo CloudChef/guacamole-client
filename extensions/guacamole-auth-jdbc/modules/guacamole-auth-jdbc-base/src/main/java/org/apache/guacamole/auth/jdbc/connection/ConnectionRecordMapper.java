@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
+import org.apache.guacamole.auth.jdbc.base.RecordAndSearchTerm;
 import org.apache.ibatis.annotations.Param;
 import org.apache.guacamole.auth.jdbc.user.UserModel;
 
@@ -78,8 +79,8 @@ public interface ConnectionRecordMapper {
      *     The results of the search performed with the given parameters.
      */
     List<ConnectionRecordModel> search(@Param("terms") Collection<ActivityRecordSearchTerm> terms,
-            @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
-            @Param("limit") int limit,@Param("tenantId") String tenantId);
+                                       @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
+                                       @Param("limit") int limit,@Param("recordAndSearchTerm") RecordAndSearchTerm recordAndSearchTerm);
 
     /**
      * Searches for up to <code>limit</code> connection records that contain

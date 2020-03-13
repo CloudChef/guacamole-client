@@ -154,11 +154,23 @@ public abstract class DirectoryObjectTranslator<InternalType extends Identifiabl
 
         String cmpUserId = attributes.get("cmpUserId");
         String tenantId = attributes.get("tenantId");
+        String guacadCloudEntryId = attributes.get("guacadCloudEntryId");
+        String ipAddress = attributes.get("ipAddress");
+        String vmName = attributes.get("vmName");
         if (cmpUserId != null || cmpUserId != "") {
             filtered.put("cmpUserId", cmpUserId);
         }
         if (tenantId != null || tenantId != "") {
             filtered.put("tenantId", tenantId);
+        }
+        if (guacadCloudEntryId != null || guacadCloudEntryId != "") {
+            filtered.put("guacadCloudEntryId", guacadCloudEntryId);
+        }
+        if (ipAddress != null || ipAddress != "") {
+            filtered.put("ipAddress", ipAddress);
+        }
+        if (vmName != null || vmName != "") {
+            filtered.put("vmName", vmName);
         }
 
         return filtered;

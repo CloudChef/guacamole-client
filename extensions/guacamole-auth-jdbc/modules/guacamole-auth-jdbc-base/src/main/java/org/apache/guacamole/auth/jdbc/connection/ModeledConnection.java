@@ -93,6 +93,9 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
 
     public static final String CMP_USER_ID = "cmpUserId";
     public static final String TENANT_ID = "tenantId";
+    public static final String GUACAD_CLOUD_ENTRY_ID = "guacadCloudEntryId";
+    public static final String IP_ADDRESS = "ipAddress";
+    public static final String VM_NAME = "vmName";
 
     /**
      * All attributes which describe the configuration of the guacd instance
@@ -173,8 +176,11 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
                 MAX_CONNECTIONS_PER_USER_NAME,
                 CONNECTION_WEIGHT,
                 FAILOVER_ONLY_NAME,
+                    GUACAD_CLOUD_ENTRY_ID,
                     CMP_USER_ID,
-                    TENANT_ID
+                    TENANT_ID,
+                    IP_ADDRESS,
+                    VM_NAME
             )));
 
     /**
@@ -390,6 +396,18 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
 
         if(attributes.get(TENANT_ID) != null){
             getModel().setTenantId(TextField.parse(attributes.get(TENANT_ID)));
+        }
+
+        if(attributes.get(GUACAD_CLOUD_ENTRY_ID) != null){
+            getModel().setGuacadCloudEntryId(TextField.parse(attributes.get(GUACAD_CLOUD_ENTRY_ID)));
+        }
+
+        if(attributes.get(IP_ADDRESS) != null){
+            getModel().setIpAddress(TextField.parse(attributes.get(IP_ADDRESS)));
+        }
+
+        if(attributes.get(VM_NAME) != null){
+            getModel().setVmName(TextField.parse(attributes.get(VM_NAME)));
         }
 
     }

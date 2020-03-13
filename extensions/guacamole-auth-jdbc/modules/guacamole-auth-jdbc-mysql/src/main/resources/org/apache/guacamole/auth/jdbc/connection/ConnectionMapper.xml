@@ -40,8 +40,11 @@
         <result column="connection_weight"        property="connectionWeight"      jdbcType="INTEGER"/>
         <result column="failover_only"            property="failoverOnly"          jdbcType="BOOLEAN"/>
         <result column="last_active"              property="lastActive"            jdbcType="TIMESTAMP"/>
+        <result column="guacad_cloud_entry_id"    property="guacadCloudEntryId"    jdbcType="VARCHAR"/>
         <result column="cmp_user_id"            property="cmpUserId"              jdbcType="VARCHAR"/>
         <result column="tenant_id"                property="tenantId"               jdbcType="VARCHAR"/>
+        <result column="ip_address"                property="ipAddress"               jdbcType="VARCHAR"/>
+        <result column="vm_name"                property="vmName"               jdbcType="VARCHAR"/>
 
         <!-- Associated sharing profiles -->
         <collection property="sharingProfileIdentifiers" resultSet="sharingProfiles" ofType="java.lang.String"
@@ -120,8 +123,11 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
+        guacamole_connection.guacad_cloud_entry_id,
         guacamole_connection.cmp_user_id,
-        guacamole_connection.tenant_id
+        guacamole_connection.tenant_id,
+        guacamole_connection.ip_address,
+        guacamole_connection.vm_name
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE guacamole_connection.connection_id IN
@@ -169,8 +175,11 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
+            guacamole_connection.guacad_cloud_entry_id,
             guacamole_connection.cmp_user_id,
-            guacamole_connection.tenant_id
+            guacamole_connection.tenant_id,
+            guacamole_connection.ip_address,
+            guacamole_connection.vm_name
         FROM guacamole_connection
         JOIN guacamole_connection_permission ON guacamole_connection_permission.connection_id = guacamole_connection.connection_id
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
@@ -238,8 +247,11 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
+            guacamole_connection.guacad_cloud_entry_id,
             guacamole_connection.cmp_user_id,
-            guacamole_connection.tenant_id
+            guacamole_connection.tenant_id,
+            guacamole_connection.ip_address,
+            guacamole_connection.vm_name
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE 
@@ -271,8 +283,11 @@
             proxy_encryption_method,
             connection_weight,
             failover_only,
+            guacad_cloud_entry_id,
             cmp_user_id,
-            tenant_id
+            tenant_id,
+            ip_address,
+            vm_name
         )
         VALUES (
             #{object.name,jdbcType=VARCHAR},
@@ -285,8 +300,11 @@
             #{object.proxyEncryptionMethod,jdbcType=VARCHAR},
             #{object.connectionWeight,jdbcType=INTEGER},
             #{object.failoverOnly,jdbcType=BOOLEAN},
+            #{object.guacadCloudEntryId,jdbcType=VARCHAR},
             #{object.cmpUserId,jdbcType=VARCHAR},
-            #{object.tenantId,jdbcType=INTEGER}
+            #{object.tenantId,jdbcType=VARCHAR},
+            #{object.ipAddress,jdbcType=VARCHAR},
+            #{object.vmName,jdbcType=VARCHAR}
         )
 
     </insert>

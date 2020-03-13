@@ -103,13 +103,28 @@ public class ModeledConnectionRecord extends ModeledActivityRecord
     }
 
     @Override
-    public String getGuacadAddress() {
-        return model.getGuacadAddress();
+    public String getGuacadCloudEntryId() {
+        return model.getGuacadCloudEntryId();
     }
 
     @Override
     public String getTenantId() {
         return model.getTenantId();
+    }
+
+    @Override
+    public String getProtocolName() {
+        return model.getProtocolName();
+    }
+
+    @Override
+    public String getIpAddress() {
+        return model.getIpAddress();
+    }
+
+    @Override
+    public String getVmName() {
+        return model.getVmName();
     }
 
 }

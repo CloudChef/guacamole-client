@@ -59,9 +59,11 @@ public class ConnectionRecordModel extends ActivityRecordModel {
     private String typescriptName;
     private String exts;
     private String cmpUserId;
-    private String guacadAddress;
+    private String guacadCloudEntryId;
     private String tenantId;
     private String protocolName;
+    private String ipAddress;
+    private String vmName;
 
     /**
      * Returns the identifier of the connection associated with this connection
@@ -211,12 +213,12 @@ public class ConnectionRecordModel extends ActivityRecordModel {
         this.cmpUserId = cmpUserId;
     }
 
-    public String getGuacadAddress() {
-        return guacadAddress;
+    public String getGuacadCloudEntryId() {
+        return guacadCloudEntryId;
     }
 
-    public void setGuacadAddress(String guacadAddress) {
-        this.guacadAddress = guacadAddress;
+    public void setGuacadCloudEntryId(String guacadCloudEntryId) {
+        this.guacadCloudEntryId = guacadCloudEntryId;
     }
 
     public String getTenantId() {
@@ -233,5 +235,21 @@ public class ConnectionRecordModel extends ActivityRecordModel {
 
     public void setProtocolName(String protocolName) {
         this.protocolName = protocolName;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getVmName() {
+        return vmName;
+    }
+
+    public void setVmName(String vmName) {
+        this.vmName = vmName;
     }
 }

@@ -298,8 +298,10 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         //保存历史记录的扩展属性
         recordModel.setCmpUserId(record.getConnection().getModel().getCmpUserId());
         recordModel.setTenantId(record.getConnection().getModel().getTenantId());
-        recordModel.setGuacadAddress(record.getConnection().getModel().getProxyHostname());
+        recordModel.setGuacadCloudEntryId(record.getConnection().getModel().getGuacadCloudEntryId());
         recordModel.setProtocolName(record.getConnection().getModel().getProtocol());
+        recordModel.setIpAddress(record.getConnection().getModel().getIpAddress());
+        recordModel.setVmName(record.getConnection().getModel().getVmName());
 
         Collection<ConnectionParameterModel> parameters = connectionParameterMapper.select(record.getConnectionIdentifier());
 

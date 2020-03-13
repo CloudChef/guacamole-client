@@ -90,6 +90,7 @@ public class HistoryResource {
     @Path("connections")
     public List<APIConnectionRecord> getConnectionHistory(
             @QueryParam("tenantId")String tenantId,
+            @QueryParam("recordSearchRequest")String recordSearchTerm,
             @QueryParam("contains") List<String> requiredContents,
             @QueryParam("order") List<APISortPredicate> sortPredicates)
             throws GuacamoleException {
@@ -110,7 +111,7 @@ public class HistoryResource {
         // Limit to maximum result size
        // history = history.limit(MAXIMUM_HISTORY_SIZE);
 
-        history = history.tenantId(tenantId);
+        history = history.recordAndSearchTerm(recordSearchTerm);
 
         // Convert record set to collection of API connection records
         List<APIConnectionRecord> apiRecords = new ArrayList<APIConnectionRecord>();

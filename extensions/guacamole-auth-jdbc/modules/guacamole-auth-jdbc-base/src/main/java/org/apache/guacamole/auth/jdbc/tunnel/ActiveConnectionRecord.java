@@ -356,13 +356,28 @@ public class ActiveConnectionRecord implements ConnectionRecord {
     }
 
     @Override
-    public String getGuacadAddress() {
-        return connection.getModel().getProxyHostname();
+    public String getGuacadCloudEntryId() {
+        return connection.getModel().getGuacadCloudEntryId();
     }
 
     @Override
     public String getTenantId() {
         return connection.getModel().getTenantId();
+    }
+
+    @Override
+    public String getProtocolName() {
+        return connection.getModel().getProtocol();
+    }
+
+    @Override
+    public String getIpAddress() {
+        return connection.getModel().getIpAddress();
+    }
+
+    @Override
+    public String getVmName() {
+        return connection.getModel().getVmName();
     }
 
     @Override

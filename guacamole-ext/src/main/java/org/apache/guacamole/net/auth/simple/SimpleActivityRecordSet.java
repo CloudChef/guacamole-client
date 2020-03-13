@@ -55,7 +55,12 @@ public class SimpleActivityRecordSet<RecordType extends ActivityRecord>
 
     @Override
     public ActivityRecordSet<RecordType> tenantId(String tenantId) throws GuacamoleException {
-        return null;
+        return this;
+    }
+
+    @Override
+    public ActivityRecordSet<RecordType> recordAndSearchTerm(String recordAndSearchTerm) throws GuacamoleException {
+        return this;
     }
 
     @Override

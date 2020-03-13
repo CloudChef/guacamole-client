@@ -55,7 +55,12 @@ public class SimpleConnectionRecordSet implements org.apache.guacamole.net.auth.
 
     @Override
     public ActivityRecordSet<ConnectionRecord> tenantId(String tenantId) throws GuacamoleException {
-        return null;
+        return this;
+    }
+
+    @Override
+    public ActivityRecordSet<ConnectionRecord> recordAndSearchTerm(String recordAndSearchTerm) throws GuacamoleException {
+        return this;
     }
 
     @Override
