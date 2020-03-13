@@ -30,7 +30,7 @@
 
     <appender name="APP_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${LOG_HOME}/guacamole.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${LOG_HOME}/guacamole.%d{yyyy-MM-dd}.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -46,9 +46,11 @@
     </appender>
 
     <!-- Log at INFO level -->
-    <root level="info">
+    <root level="DEBUG">
         <appender-ref ref="GUAC-DEFAULT"/>
         <appender-ref ref="APP_LOG"/>
     </root>
+
+    <logger name="org.apache.guacamole.auth.jdbc.connection" level="DEBUG" />
 
 </configuration>

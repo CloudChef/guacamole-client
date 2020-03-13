@@ -70,4 +70,28 @@ public interface ConnectionRecord extends ActivityRecord {
      */
     public String getSharingProfileName();
 
+     Integer getRecordID();
+
+    String getRecordingPath();
+
+    String getRecordingName();
+
+    String getTypescriptPath();
+
+    String getTypescriptName();
+
+    String getExts();
+
+    String getCmpUserId();
+
+    String getGuacadCloudEntryId();
+
+    String getTenantId();
+
+    String getProtocolName();
+
+    String getIpAddress();
+
+    String getVmName();
+
 }

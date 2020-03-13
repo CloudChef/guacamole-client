@@ -28,15 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.guacamole.auth.jdbc.base.*;
 import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
-import org.apache.guacamole.auth.jdbc.base.ModeledDirectoryObjectMapper;
 import org.apache.guacamole.auth.jdbc.tunnel.GuacamoleTunnelService;
 import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
-import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
-import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
-import org.apache.guacamole.auth.jdbc.base.ModeledChildDirectoryObjectService;
 import org.apache.guacamole.auth.jdbc.permission.ConnectionPermissionMapper;
 import org.apache.guacamole.auth.jdbc.permission.ObjectPermissionMapper;
 import org.apache.guacamole.net.GuacamoleTunnel;
@@ -464,8 +462,8 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
      *     If permission to read the connection history is denied.
      */
     public List<ConnectionRecord> retrieveHistory(ModeledAuthenticatedUser user,
-            Collection<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+                                                  Collection<ActivityRecordSearchTerm> requiredContents,
+                                                  List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm activityRecordSearchTerm)
             throws GuacamoleException {
 
         List<ConnectionRecordModel> searchResults;
@@ -473,7 +471,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
         // Bypass permission checks if the user is a system admin
         if (user.getUser().isAdministrator())
             searchResults = connectionRecordMapper.search(requiredContents,
-                    sortPredicates, limit);
+                    sortPredicates, limit,activityRecordSearchTerm);
 
         // Otherwise only return explicitly readable history records
         else

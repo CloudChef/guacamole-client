@@ -53,6 +53,18 @@ public class ConnectionRecordModel extends ActivityRecordModel {
      */
     private String sharingProfileName;
 
+    private String recordingPath;
+    private String recordingName;
+    private String typescriptPath;
+    private String typescriptName;
+    private String exts;
+    private String cmpUserId;
+    private String guacadCloudEntryId;
+    private String tenantId;
+    private String protocolName;
+    private String ipAddress;
+    private String vmName;
+
     /**
      * Returns the identifier of the connection associated with this connection
      * record.
@@ -153,4 +165,91 @@ public class ConnectionRecordModel extends ActivityRecordModel {
         this.sharingProfileName = sharingProfileName;
     }
 
+    public String getRecordingPath() {
+        return recordingPath;
+    }
+
+    public void setRecordingPath(String recordingPath) {
+        this.recordingPath = recordingPath;
+    }
+
+    public String getRecordingName() {
+        return recordingName;
+    }
+
+    public void setRecordingName(String recordingName) {
+        this.recordingName = recordingName;
+    }
+
+    public String getTypescriptPath() {
+        return typescriptPath;
+    }
+
+    public void setTypescriptPath(String typescriptPath) {
+        this.typescriptPath = typescriptPath;
+    }
+
+    public String getTypescriptName() {
+        return typescriptName;
+    }
+
+    public void setTypescriptName(String typescriptName) {
+        this.typescriptName = typescriptName;
+    }
+
+    public String getExts() {
+        return exts;
+    }
+
+    public void setExts(String exts) {
+        this.exts = exts;
+    }
+
+    public String getCmpUserId() {
+        return cmpUserId;
+    }
+
+    public void setCmpUserId(String cmpUserId) {
+        this.cmpUserId = cmpUserId;
+    }
+
+    public String getGuacadCloudEntryId() {
+        return guacadCloudEntryId;
+    }
+
+    public void setGuacadCloudEntryId(String guacadCloudEntryId) {
+        this.guacadCloudEntryId = guacadCloudEntryId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getProtocolName() {
+        return protocolName;
+    }
+
+    public void setProtocolName(String protocolName) {
+        this.protocolName = protocolName;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getVmName() {
+        return vmName;
+    }
+
+    public void setVmName(String vmName) {
+        this.vmName = vmName;
+    }
 }

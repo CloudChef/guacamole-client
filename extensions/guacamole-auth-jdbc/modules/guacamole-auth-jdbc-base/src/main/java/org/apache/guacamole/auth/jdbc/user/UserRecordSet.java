@@ -27,6 +27,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
 import org.apache.guacamole.auth.jdbc.base.ModeledActivityRecordSet;
+import org.apache.guacamole.auth.jdbc.base.RecordAndSearchTerm;
 import org.apache.guacamole.net.auth.ActivityRecord;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 
@@ -47,7 +48,7 @@ public class UserRecordSet extends ModeledActivityRecordSet<ActivityRecord> {
     @Override
     protected Collection<ActivityRecord> retrieveHistory(
             AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+            List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm recordAndSearchTerm)
             throws GuacamoleException {
 
         // Retrieve history from database

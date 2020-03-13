@@ -99,6 +99,12 @@ public class ConnectionModel extends ChildObjectModel {
      */
     private Date lastActive;
 
+    private String cmpUserId;
+    private String tenantId;
+    private String guacadCloudEntryId;
+    private String ipAddress;
+    private String vmName;
+
     /**
      * Creates a new, empty connection.
      */
@@ -392,4 +398,43 @@ public class ConnectionModel extends ChildObjectModel {
         throw new UnsupportedOperationException("Connection identifiers are derived from IDs. They cannot be set.");
     }
 
+    public String getCmpUserId() {
+        return cmpUserId;
+    }
+
+    public void setCmpUserId(String cmpUserId) {
+        this.cmpUserId = cmpUserId;
+    }
+
+    public String getGuacadCloudEntryId() {
+        return guacadCloudEntryId;
+    }
+
+    public void setGuacadCloudEntryId(String guacadCloudEntryId) {
+        this.guacadCloudEntryId = guacadCloudEntryId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getVmName() {
+        return vmName;
+    }
+
+    public void setVmName(String vmName) {
+        this.vmName = vmName;
+    }
 }

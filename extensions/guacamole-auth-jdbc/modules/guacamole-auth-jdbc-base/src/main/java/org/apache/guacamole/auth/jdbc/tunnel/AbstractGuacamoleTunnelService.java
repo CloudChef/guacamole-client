@@ -21,30 +21,16 @@ package org.apache.guacamole.auth.jdbc.tunnel;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.guacamole.*;
+import org.apache.guacamole.auth.jdbc.connection.*;
 import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
-import org.apache.guacamole.auth.jdbc.connection.ModeledConnection;
 import org.apache.guacamole.auth.jdbc.connectiongroup.ModeledConnectionGroup;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionRecordMapper;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionModel;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionRecordModel;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterModel;
-import org.apache.guacamole.GuacamoleException;
-import org.apache.guacamole.GuacamoleResourceConflictException;
-import org.apache.guacamole.GuacamoleResourceNotFoundException;
-import org.apache.guacamole.GuacamoleSecurityException;
-import org.apache.guacamole.GuacamoleServerException;
-import org.apache.guacamole.GuacamoleUpstreamException;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionMapper;
 import org.apache.guacamole.net.GuacamoleSocket;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.Connection;
@@ -53,8 +39,8 @@ import org.apache.guacamole.protocol.ConfiguredGuacamoleSocket;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 import org.apache.guacamole.token.TokenFilter;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.mybatis.guice.transactional.Transactional;
-import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterMapper;
 import org.apache.guacamole.auth.jdbc.sharing.connection.SharedConnectionDefinition;
 import org.apache.guacamole.auth.jdbc.sharingprofile.ModeledSharingProfile;
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterMapper;
@@ -309,9 +295,35 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         recordModel.setStartDate(record.getStartDate());
         recordModel.setEndDate(new Date());
 
+        //保存历史记录的扩展属性
+        recordModel.setCmpUserId(record.getConnection().getModel().getCmpUserId());
+        recordModel.setTenantId(record.getConnection().getModel().getTenantId());
+        recordModel.setGuacadCloudEntryId(record.getConnection().getModel().getGuacadCloudEntryId());
+        recordModel.setProtocolName(record.getConnection().getModel().getProtocol());
+        recordModel.setIpAddress(record.getConnection().getModel().getIpAddress());
+        recordModel.setVmName(record.getConnection().getModel().getVmName());
+
+        Collection<ConnectionParameterModel> parameters = connectionParameterMapper.select(record.getConnectionIdentifier());
+
+        GuacamoleConfiguration config = new GuacamoleConfiguration();
+        if (parameters != null) {
+            for (ConnectionParameterModel parameter : parameters) {
+                config.setParameter(parameter.getName(), parameter.getValue());
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                recordModel.setExts(mapper.writeValueAsString(parameters));
+            } catch (IOException e) {
+                logger.error("save connection record method.parse json error:{}", e);
+            }
+        }
+        recordModel.setRecordingPath(config.getParameter("recording-path"));
+        recordModel.setRecordingName(config.getParameter("recording-name"));
+        recordModel.setTypescriptPath(config.getParameter("typescript-path"));
+        recordModel.setTypescriptName(config.getParameter("typescript-name"));
+
         // Insert connection record
         connectionRecordMapper.insert(recordModel);
-
     }
 
     /**

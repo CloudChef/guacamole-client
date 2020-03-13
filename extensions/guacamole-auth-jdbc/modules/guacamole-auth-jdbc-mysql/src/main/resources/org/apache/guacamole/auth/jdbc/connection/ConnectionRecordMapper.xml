@@ -22,9 +22,20 @@
 -->
 
 <mapper namespace="org.apache.guacamole.auth.jdbc.connection.ConnectionRecordMapper" >
-
     <!-- Result mapper for system permissions -->
     <resultMap id="ConnectionRecordResultMap" type="org.apache.guacamole.auth.jdbc.connection.ConnectionRecordModel">
+        <result column="history_id"           property="recordID"                 jdbcType="INTEGER"/>
+        <result column="recording_path"       property="recordingPath"            jdbcType="VARCHAR"/>
+        <result column="recording_name"       property="recordingName"            jdbcType="VARCHAR"/>
+        <result column="typescript_path"      property="typescriptPath"           jdbcType="VARCHAR"/>
+        <result column="typescript_name"      property="typescriptName"           jdbcType="VARCHAR"/>
+        <result column="exts"                 property="exts"                     jdbcType="VARCHAR"/>
+        <result column="cmp_user_id"          property="cmpUserId"                jdbcType="VARCHAR"/>
+        <result column="tenant_id"            property="tenantId"                jdbcType="VARCHAR"/>
+        <result column="guacad_cloud_entry_id" property="guacadCloudEntryId"            jdbcType="VARCHAR"/>
+        <result column="ip_address"            property="ipAddress"               jdbcType="VARCHAR"/>
+        <result column="vm_name"            property="vmName"                     jdbcType="VARCHAR"/>
+        <result column="protocol_name"        property="protocolName"                 jdbcType="VARCHAR"/>
         <result column="connection_id"        property="connectionIdentifier"     jdbcType="INTEGER"/>
         <result column="connection_name"      property="connectionName"           jdbcType="VARCHAR"/>
         <result column="remote_host"          property="remoteHost"               jdbcType="VARCHAR"/>
@@ -40,6 +51,18 @@
     <select id="select" resultMap="ConnectionRecordResultMap">
 
         SELECT
+            guacamole_connection_history.history_id,
+            guacamole_connection_history.recording_path,
+            guacamole_connection_history.recording_name,
+            guacamole_connection_history.typescript_path,
+            guacamole_connection_history.typescript_name,
+            guacamole_connection_history.exts,
+            guacamole_connection_history.cmp_user_id,
+            guacamole_connection_history.tenant_id,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
+            guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,
             guacamole_connection_history.remote_host,
@@ -59,9 +82,20 @@
     </select>
 
     <!-- Insert the given connection record -->
-    <insert id="insert" parameterType="org.apache.guacamole.auth.jdbc.connection.ConnectionRecordModel">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="record.recordID" parameterType="org.apache.guacamole.auth.jdbc.connection.ConnectionRecordModel">
 
         INSERT INTO guacamole_connection_history (
+            recording_path,
+            recording_name,
+            typescript_path,
+            typescript_name,
+            exts,
+            cmp_user_id,
+            tenant_id,
+            guacad_cloud_entry_id,
+            ip_address,
+            vm_name,
+            protocol_name,
             connection_id,
             connection_name,
             remote_host,
@@ -73,6 +107,17 @@
             end_date
         )
         VALUES (
+            #{record.recordingPath,jdbcType=VARCHAR},
+            #{record.recordingName,jdbcType=VARCHAR},
+            #{record.typescriptPath,jdbcType=VARCHAR},
+            #{record.typescriptName,jdbcType=VARCHAR},
+            #{record.exts,jdbcType=VARCHAR},
+            #{record.cmpUserId,jdbcType=VARCHAR},
+            #{record.tenantId,jdbcType=VARCHAR},
+            #{record.guacadCloudEntryId,jdbcType=VARCHAR},
+            #{record.ipAddress,jdbcType=VARCHAR},
+            #{record.vmName,jdbcType=VARCHAR},
+            #{record.protocolName,jdbcType=VARCHAR},
             #{record.connectionIdentifier,jdbcType=VARCHAR},
             #{record.connectionName,jdbcType=VARCHAR},
             #{record.remoteHost,jdbcType=VARCHAR},
@@ -94,6 +139,18 @@
     <select id="search" resultMap="ConnectionRecordResultMap">
 
         SELECT
+            guacamole_connection_history.history_id,
+            guacamole_connection_history.recording_path,
+            guacamole_connection_history.recording_name,
+            guacamole_connection_history.typescript_path,
+            guacamole_connection_history.typescript_name,
+            guacamole_connection_history.exts,
+            guacamole_connection_history.cmp_user_id,
+            guacamole_connection_history.tenant_id,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
+            guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,
             guacamole_connection_history.remote_host,
@@ -106,27 +163,46 @@
         FROM guacamole_connection_history
         LEFT JOIN guacamole_connection ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         LEFT JOIN guacamole_user       ON guacamole_connection_history.user_id       = guacamole_user.user_id
+        where 1=1
+
+        <if test="recordAndSearchTerm != null">
+            <if test="recordAndSearchTerm.tenantId != null and recordAndSearchTerm.tenantId !=''">
+                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.tenantId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordAndSearchTerm.startDate != null and recordAndSearchTerm.endDate != null">
+                AND start_date BETWEEN #{recordAndSearchTerm.startDate,jdbcType=TIMESTAMP} AND #{recordAndSearchTerm.endDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="recordAndSearchTerm.protocolName != null and recordAndSearchTerm.protocolName !=''">
+                AND guacamole_connection_history.protocol_name = #{recordAndSearchTerm.protocolName,jdbcType=VARCHAR}
+            </if>
+            <if test="recordAndSearchTerm.guacadCloudEntryId != null and recordAndSearchTerm.guacadCloudEntryId !=''">
+                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.guacadCloudEntryId,jdbcType=VARCHAR}
+            </if>
+        </if>
+
 
         <!-- Search terms -->
         <foreach collection="terms" item="term"
-                 open="WHERE " separator=" AND ">
+                 open=" AND " separator=" AND ">
             (
+              guacamole_connection_history.ip_address like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+            OR
+               guacamole_connection_history.vm_name like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+<!--                guacamole_connection_history.user_id IN (-->
+<!--                    SELECT user_id-->
+<!--                    FROM guacamole_user-->
+<!--                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN username) > 0-->
+<!--                )-->
 
-                guacamole_connection_history.user_id IN (
-                    SELECT user_id
-                    FROM guacamole_user
-                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN username) > 0
-                )
+<!--                OR guacamole_connection_history.connection_id IN (-->
+<!--                    SELECT connection_id-->
+<!--                    FROM guacamole_connection-->
+<!--                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN connection_name) > 0-->
+<!--                )-->
 
-                OR guacamole_connection_history.connection_id IN (
-                    SELECT connection_id
-                    FROM guacamole_connection
-                    WHERE POSITION(#{term.term,jdbcType=VARCHAR} IN connection_name) > 0
-                )
-
-                <if test="term.startDate != null and term.endDate != null">
-                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
-                </if>
+<!--                <if test="term.startDate != null and term.endDate != null">-->
+<!--                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}-->
+<!--                </if>-->
 
             )
         </foreach>
@@ -152,6 +228,18 @@
     <select id="searchReadable" resultMap="ConnectionRecordResultMap">
 
         SELECT
+            guacamole_connection_history.history_id,
+            guacamole_connection_history.recording_path,
+            guacamole_connection_history.recording_name,
+            guacamole_connection_history.typescript_path,
+            guacamole_connection_history.typescript_name,
+            guacamole_connection_history.exts,
+            guacamole_connection_history.cmp_user_id,
+            guacamole_connection_history.tenant_id,
+            guacamole_connection_history.guacad_cloud_entry_id,
+            guacamole_connection_history.ip_address,
+            guacamole_connection_history.vm_name,
+            guacamole_connection_history.protocol_name,
             guacamole_connection_history.connection_id,
             guacamole_connection_history.connection_name,
             guacamole_connection_history.remote_host,
@@ -224,7 +312,7 @@
             </choose>
             <if test="sortPredicate.descending">DESC</if>
         </foreach>
-        
+
         LIMIT #{limit,jdbcType=INTEGER}
 
     </select>

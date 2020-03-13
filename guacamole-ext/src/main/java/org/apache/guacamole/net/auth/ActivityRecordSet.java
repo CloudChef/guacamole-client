@@ -98,6 +98,11 @@ public interface ActivityRecordSet<RecordType extends ActivityRecord> {
      */
     ActivityRecordSet<RecordType> limit(int limit) throws GuacamoleException;
 
+
+    ActivityRecordSet<RecordType> tenantId(String tenantId) throws GuacamoleException;
+
+    ActivityRecordSet<RecordType> recordAndSearchTerm(String recordAndSearchTerm) throws GuacamoleException;
+
     /**
      * Returns a ActivityRecordSet containing identically the records within
      * this set, sorted according to the specified criteria. The sort operation
