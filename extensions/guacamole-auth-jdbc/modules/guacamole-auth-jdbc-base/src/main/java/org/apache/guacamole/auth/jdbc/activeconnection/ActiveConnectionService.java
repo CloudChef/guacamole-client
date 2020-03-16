@@ -21,28 +21,33 @@ package org.apache.guacamole.auth.jdbc.activeconnection;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.auth.jdbc.base.DirectoryObjectService;
+import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterMapper;
+import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterModel;
 import org.apache.guacamole.auth.jdbc.tunnel.ActiveConnectionRecord;
 import org.apache.guacamole.auth.jdbc.tunnel.GuacamoleTunnelService;
+import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.ActiveConnection;
 import org.apache.guacamole.net.auth.permission.ObjectPermission;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Service which provides convenience methods for creating, retrieving, and
  * manipulating active connections.
  */
 public class ActiveConnectionService
-    implements DirectoryObjectService<TrackedActiveConnection, ActiveConnection> { 
+    implements DirectoryObjectService<TrackedActiveConnection, ActiveConnection> {
+    private Logger logger = LoggerFactory.getLogger(ActiveConnectionService.class);
+
 
     /**
      * Service for creating and tracking tunnels.
@@ -55,6 +60,9 @@ public class ActiveConnectionService
      */
     @Inject
     private Provider<TrackedActiveConnection> trackedActiveConnectionProvider;
+
+    @Inject
+    private ConnectionParameterMapper connectionParameterMapper;
     
     @Override
     public TrackedActiveConnection retrieveObject(ModeledAuthenticatedUser user,
@@ -99,8 +107,22 @@ public class ActiveConnectionService
 
             // Add connection if within requested identifiers
             if (identifierSet.contains(record.getUUID().toString())) {
+                Collection<ConnectionParameterModel> parameters = connectionParameterMapper.select(record.getConnectionIdentifier());
                 TrackedActiveConnection activeConnection = trackedActiveConnectionProvider.get();
-                activeConnection.init(user, record, hasPrivilegedAccess, hasPrivilegedAccess);
+                String parameterJsonStr = null;
+                Map<String,Object> configMap = new HashMap<>();
+                if (parameters != null) {
+                    for (ConnectionParameterModel parameter : parameters) {
+                        configMap.put(parameter.getName(), parameter.getValue());
+                    }
+                    ObjectMapper mapper = new ObjectMapper();
+                    try {
+                        parameterJsonStr = mapper.writeValueAsString(configMap);
+                    } catch (IOException e) {
+                        logger.error("save connection record method.parse json error:{}", e);
+                    }
+                }
+                activeConnection.init(user, record, parameterJsonStr, hasPrivilegedAccess, hasPrivilegedAccess);
                 activeConnections.add(activeConnection);
             }
 

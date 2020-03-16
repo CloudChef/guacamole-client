@@ -180,4 +180,6 @@ public interface ActiveConnection extends Identifiable, Connectable,
 
     String getVmName();
 
+    String getExts();
+
 }

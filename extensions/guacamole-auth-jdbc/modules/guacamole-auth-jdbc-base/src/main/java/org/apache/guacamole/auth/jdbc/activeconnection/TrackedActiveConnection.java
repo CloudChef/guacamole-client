@@ -20,11 +20,14 @@
 package org.apache.guacamole.auth.jdbc.activeconnection;
 
 import com.google.inject.Inject;
+
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.auth.jdbc.base.RestrictedObject;
+import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterModel;
 import org.apache.guacamole.auth.jdbc.connection.ModeledConnection;
 import org.apache.guacamole.auth.jdbc.sharing.ConnectionSharingService;
 import org.apache.guacamole.auth.jdbc.sharing.connection.SharedConnectionDefinition;
@@ -106,6 +109,7 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
     private String protocolName;
     private String ipAddress;
     private String vmName;
+    private String exts;
 
     /**
      * Initializes this TrackedActiveConnection, copying the data associated
@@ -131,7 +135,7 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
      *     join the active connection.
      */
     public void init(ModeledAuthenticatedUser currentUser,
-            ActiveConnectionRecord activeConnectionRecord,
+            ActiveConnectionRecord activeConnectionRecord, String parameterJsonStr,
             boolean includeSensitiveInformation,
             boolean connectable) {
 
@@ -150,6 +154,7 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
         this.protocolName             = activeConnectionRecord.getProtocolName();
         this.ipAddress                = activeConnectionRecord.getIpAddress();
         this.vmName                   = activeConnectionRecord.getVmName();
+        this.exts                     = parameterJsonStr;
 
         // Include sensitive data, too, if requested
         if (includeSensitiveInformation) {
@@ -327,5 +332,14 @@ public class TrackedActiveConnection extends RestrictedObject implements ActiveC
 
     public void setProtocolName(String protocolName) {
         this.protocolName = protocolName;
+    }
+
+    @Override
+    public String getExts() {
+        return exts;
+    }
+
+    public void setExts(String exts) {
+        this.exts = exts;
     }
 }

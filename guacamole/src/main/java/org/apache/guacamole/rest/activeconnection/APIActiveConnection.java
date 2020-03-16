@@ -65,6 +65,7 @@ public class APIActiveConnection {
     private String protocolName;
     private String ipAddress;
     private String vmName;
+    private String exts;
 
     /**
      * Creates a new APIActiveConnection, copying the information from the given
@@ -86,6 +87,7 @@ public class APIActiveConnection {
         this.protocolName         = connection.getProtocolName();
         this.ipAddress            = connection.getIpAddress();
         this.vmName               = connection.getVmName();
+        this.exts                 =  connection.getExts();
     }
 
     /**
@@ -198,5 +200,13 @@ public class APIActiveConnection {
 
     public void setVmName(String vmName) {
         this.vmName = vmName;
+    }
+
+    public String getExts() {
+        return exts;
+    }
+
+    public void setExts(String exts) {
+        this.exts = exts;
     }
 }
