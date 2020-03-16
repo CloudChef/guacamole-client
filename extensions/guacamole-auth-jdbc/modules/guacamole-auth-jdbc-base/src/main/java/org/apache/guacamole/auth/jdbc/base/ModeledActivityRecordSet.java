@@ -140,6 +140,8 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             ObjectMapper mapper = new ObjectMapper();
             try {
                 this.recordAndSearchTerm = mapper.readValue(recordAndSearchTermStr, RecordAndSearchTerm.class);
+                recordAndSearchTerm.setCurrIndex((recordAndSearchTerm.getCurrPage()-1)*recordAndSearchTerm.getPageSize());
+                recordAndSearchTerm.setCurrPage(recordAndSearchTerm.getPageSize());
                 if (recordAndSearchTerm.getQueryString() != null && recordAndSearchTerm.getQueryString() != "") {
                     this.contains(recordAndSearchTerm.getQueryString());
                 }

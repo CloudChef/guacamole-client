@@ -28,6 +28,9 @@ public class RecordAndSearchTerm {
     private String protocolName;
     private String guacadCloudEntryId;
     private String queryString;
+    private int currPage;
+    private int currIndex;
+    private int pageSize;
 
     public String getTenantId() {
         return tenantId;
@@ -75,5 +78,29 @@ public class RecordAndSearchTerm {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
+    }
+
+    public int getCurrIndex() {
+        return currIndex;
+    }
+
+    public void setCurrIndex(int currIndex) {
+        this.currIndex = currIndex;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getCurrPage() {
+        return currPage;
+    }
+
+    public void setCurrPage(int currPage) {
+        this.currPage = currPage;
     }
 }
