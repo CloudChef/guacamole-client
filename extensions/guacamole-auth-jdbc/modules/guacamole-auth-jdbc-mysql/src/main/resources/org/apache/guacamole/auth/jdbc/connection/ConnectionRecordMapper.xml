@@ -220,7 +220,10 @@
             <if test="sortPredicate.descending">DESC</if>
         </foreach>
 
-        LIMIT #{limit,jdbcType=INTEGER}
+        <if test="recordAndSearchTerm != null ">
+            LIMIT #{recordAndSearchTerm.currIndex,jdbcType=INTEGER},#{recordAndSearchTerm.pageSize,jdbcType=INTEGER}
+        </if>
+
 
     </select>
 
