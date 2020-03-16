@@ -312,7 +312,7 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
             }
             ObjectMapper mapper = new ObjectMapper();
             try {
-                recordModel.setExts(mapper.writeValueAsString(parameters));
+                recordModel.setExts(mapper.writeValueAsString(config.getParameters()));
             } catch (IOException e) {
                 logger.error("save connection record method.parse json error:{}", e);
             }
