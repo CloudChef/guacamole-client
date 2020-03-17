@@ -42,6 +42,11 @@ public class SimpleActivityRecordSet<RecordType extends ActivityRecord>
     }
 
     @Override
+    public Integer getTotalNum() throws GuacamoleException {
+        return 0;
+    }
+
+    @Override
     public ActivityRecordSet<RecordType> contains(String value)
             throws GuacamoleException {
         return this;

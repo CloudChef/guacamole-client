@@ -19,15 +19,15 @@
 
 package org.apache.guacamole.rest.history;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import com.google.inject.Inject;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.ActivityRecord;
 import org.apache.guacamole.net.auth.ActivityRecordSet;
@@ -122,6 +122,47 @@ public class HistoryResource {
         return apiRecords;
 
     }
+
+
+    @GET
+    @Path("connections-ext")
+    public Map<String, Object> getConnectionHistoryExt(
+            @QueryParam("tenantId") String tenantId,
+            @QueryParam("recordSearchRequest") String recordSearchTerm,
+            @QueryParam("contains") List<String> requiredContents,
+            @QueryParam("order") List<APISortPredicate> sortPredicates)
+            throws GuacamoleException {
+        // Retrieve overall connection history
+        ActivityRecordSet<ConnectionRecord> history = userContext.getConnectionHistory();
+
+        // Restrict to records which contain the specified strings
+        for (String required : requiredContents) {
+            if (!required.isEmpty())
+                history = history.contains(required);
+        }
+
+        // Sort according to specified ordering
+        for (APISortPredicate predicate : sortPredicates)
+            history = history.sort(predicate.getProperty(), predicate.isDescending());
+
+        // Limit to maximum result size
+        // history = history.limit(MAXIMUM_HISTORY_SIZE);
+
+        history = history.recordAndSearchTerm(recordSearchTerm);
+
+        // Convert record set to collection of API connection records
+        List<APIConnectionRecord> apiRecords = new ArrayList<APIConnectionRecord>();
+        for (ConnectionRecord record : history.asCollection())
+            apiRecords.add(new APIConnectionRecord(record));
+
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("data", apiRecords);
+        Integer total = history.getTotalNum();
+        total = (total == null ? 0 : total);
+        returnMap.put("total", total);
+        return returnMap;
+    }
+
 
     /**
      * Retrieves the login history for all users, restricted by optional filter

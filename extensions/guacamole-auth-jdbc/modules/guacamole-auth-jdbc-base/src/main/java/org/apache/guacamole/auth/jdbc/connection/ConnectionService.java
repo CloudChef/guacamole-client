@@ -483,6 +483,13 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
 
     }
 
+    public Integer getHistoryTotalNum(ModeledAuthenticatedUser user,
+                                  Collection<ActivityRecordSearchTerm> requiredContents,
+                                  List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm activityRecordSearchTerm) {
+        return connectionRecordMapper.total(requiredContents,
+                sortPredicates, limit, activityRecordSearchTerm);
+    }
+
     /**
      * Connects to the given connection as the given user, using the given
      * client information. If the user does not have permission to read the

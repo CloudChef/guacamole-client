@@ -107,6 +107,13 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             List<ActivityRecordSortPredicate> sortPredicates,
             int limit,RecordAndSearchTerm recordAndSearchTerm) throws GuacamoleException;
 
+
+    protected abstract Integer getHistoryTotalNum(
+            AuthenticatedUser user,
+            Set<ActivityRecordSearchTerm> requiredContents,
+            List<ActivityRecordSortPredicate> sortPredicates,
+            int limit,RecordAndSearchTerm recordAndSearchTerm) throws GuacamoleException;
+
     @Override
     public Collection<RecordType> asCollection()
             throws GuacamoleException {
@@ -119,6 +126,12 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             throws GuacamoleException {
         requiredContents.add(new ActivityRecordSearchTerm(value));
         return this;
+    }
+
+    @Override
+    public Integer getTotalNum() throws GuacamoleException {
+        return getHistoryTotalNum(getCurrentUser(), requiredContents,
+                sortPredicates, limit, recordAndSearchTerm);
     }
 
     @Override
@@ -141,7 +154,7 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             try {
                 this.recordAndSearchTerm = mapper.readValue(recordAndSearchTermStr, RecordAndSearchTerm.class);
                 recordAndSearchTerm.setCurrIndex((recordAndSearchTerm.getCurrPage()-1)*recordAndSearchTerm.getPageSize());
-                recordAndSearchTerm.setCurrPage(recordAndSearchTerm.getPageSize());
+                recordAndSearchTerm.setPageSize(recordAndSearchTerm.getPageSize());
                 if (recordAndSearchTerm.getQueryString() != null && recordAndSearchTerm.getQueryString() != "") {
                     this.contains(recordAndSearchTerm.getQueryString());
                 }

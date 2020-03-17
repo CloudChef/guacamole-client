@@ -57,4 +57,9 @@ public class UserRecordSet extends ModeledActivityRecordSet<ActivityRecord> {
 
     }
 
+    @Override
+    protected Integer getHistoryTotalNum(AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents, List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm recordAndSearchTerm) throws GuacamoleException {
+        return 0;
+    }
+
 }
