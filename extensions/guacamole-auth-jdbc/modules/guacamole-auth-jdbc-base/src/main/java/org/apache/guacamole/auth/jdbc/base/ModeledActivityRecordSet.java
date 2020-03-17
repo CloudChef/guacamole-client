@@ -146,7 +146,7 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
                     this.contains(recordAndSearchTerm.getQueryString());
                 }
             } catch (IOException e) {
-                logger.info("Record and search term parse json error:{}", e);
+                logger.error("Record and search term parse json error:{}", e);
             }
         }
         return this;
