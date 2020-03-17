@@ -173,10 +173,16 @@
                 AND start_date BETWEEN #{recordAndSearchTerm.startDate,jdbcType=TIMESTAMP} AND #{recordAndSearchTerm.endDate,jdbcType=TIMESTAMP}
             </if>
             <if test="recordAndSearchTerm.protocolName != null and recordAndSearchTerm.protocolName !=''">
-                AND guacamole_connection_history.protocol_name = #{recordAndSearchTerm.protocolName,jdbcType=VARCHAR}
+                AND guacamole_connection_history.protocol_name in
+                <foreach item="item" index="index" collection="recordAndSearchTerm.protocolName.split(',')" open="(" separator="," close=")">
+                    '${item}'
+                </foreach>
             </if>
             <if test="recordAndSearchTerm.guacadCloudEntryId != null and recordAndSearchTerm.guacadCloudEntryId !=''">
-                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.guacadCloudEntryId,jdbcType=VARCHAR}
+                AND guacamole_connection_history.guacad_cloud_entry_id in
+                <foreach item="item" index="index" collection="recordAndSearchTerm.guacadCloudEntryId.split(',')" open="(" separator="," close=")">
+                    '${item}'
+                </foreach>
             </if>
         </if>
 
