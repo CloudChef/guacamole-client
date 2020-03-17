@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.rest.directory;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.GuacamoleUnsupportedException;
+import org.apache.guacamole.net.SSLGuacamoleSocket;
 import org.apache.guacamole.net.auth.Directory;
 import org.apache.guacamole.net.auth.Identifiable;
 import org.apache.guacamole.net.auth.Permissions;
@@ -45,6 +47,9 @@ import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
 import org.apache.guacamole.rest.APIPatch;
 import org.apache.guacamole.rest.PATCH;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A REST resource which abstracts the operations available on all Guacamole
@@ -67,6 +72,9 @@ import org.apache.guacamole.rest.PATCH;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public abstract class DirectoryResource<InternalType extends Identifiable, ExternalType> {
+
+    private Logger logger = LoggerFactory.getLogger(DirectoryResource.class);
+
 
     /**
      * The UserContext associated with the Directory being exposed by this
@@ -237,6 +245,12 @@ public abstract class DirectoryResource<InternalType extends Identifiable, Exter
     @POST
     public ExternalType createObject(ExternalType object)
             throws GuacamoleException {
+        ObjectMapper objectMapper =  new ObjectMapper();
+        try {
+            logger.info("create object class name:{}.parameters:{}",object.getClass(),objectMapper.writeValueAsString(object));
+        } catch (IOException e) {
+            logger.error("create object method parse json error.error:{}",e);
+        }
 
         // Validate that data was provided
         if (object == null)
