@@ -82,6 +82,10 @@ public interface ConnectionRecordMapper {
                                        @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
                                        @Param("limit") int limit,@Param("recordAndSearchTerm") RecordAndSearchTerm recordAndSearchTerm);
 
+    Integer total(@Param("terms") Collection<ActivityRecordSearchTerm> terms,
+              @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
+              @Param("limit") int limit, @Param("recordAndSearchTerm") RecordAndSearchTerm recordAndSearchTerm);
+
     /**
      * Searches for up to <code>limit</code> connection records that contain
      * the given terms, sorted by the given predicates. Only records that are

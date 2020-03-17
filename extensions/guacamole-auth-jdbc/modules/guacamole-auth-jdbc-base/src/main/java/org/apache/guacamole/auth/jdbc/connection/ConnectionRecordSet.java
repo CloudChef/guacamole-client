@@ -56,4 +56,10 @@ public class ConnectionRecordSet extends ModeledActivityRecordSet<ConnectionReco
 
     }
 
+    @Override
+    protected Integer getHistoryTotalNum(AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents, List<ActivityRecordSortPredicate> sortPredicates, int limit, RecordAndSearchTerm recordAndSearchTerm) throws GuacamoleException {
+        return connectionService.getHistoryTotalNum(getCurrentUser(),
+                requiredContents, sortPredicates, limit,recordAndSearchTerm);
+    }
+
 }

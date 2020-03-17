@@ -57,6 +57,8 @@ public interface ActivityRecordSet<RecordType extends ActivityRecord> {
      */
     Collection<RecordType> asCollection() throws GuacamoleException;
 
+    Integer getTotalNum() throws GuacamoleException;
+
     /**
      * Returns the subset of records which contain the given value. The
      * properties and semantics involved with determining whether a particular

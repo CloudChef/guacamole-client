@@ -42,6 +42,11 @@ public class SimpleConnectionRecordSet implements org.apache.guacamole.net.auth.
     }
 
     @Override
+    public Integer getTotalNum() throws GuacamoleException {
+        return 0;
+    }
+
+    @Override
     public org.apache.guacamole.net.auth.ConnectionRecordSet contains(String value)
             throws GuacamoleException {
         return this;

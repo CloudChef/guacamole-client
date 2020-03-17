@@ -233,6 +233,60 @@
 
     </select>
 
+
+    <select id="total" resultType="java.lang.Integer">
+        SELECT
+         count(*)
+        FROM guacamole_connection_history
+        LEFT JOIN guacamole_connection ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
+        LEFT JOIN guacamole_user       ON guacamole_connection_history.user_id       = guacamole_user.user_id
+        where 1=1
+
+        <if test="recordAndSearchTerm != null">
+            <if test="recordAndSearchTerm.tenantId != null and recordAndSearchTerm.tenantId !=''">
+                AND guacamole_connection_history.tenant_id = #{recordAndSearchTerm.tenantId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordAndSearchTerm.startDate != null and recordAndSearchTerm.endDate != null">
+                AND start_date BETWEEN #{recordAndSearchTerm.startDate,jdbcType=TIMESTAMP} AND #{recordAndSearchTerm.endDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="recordAndSearchTerm.protocolName != null and recordAndSearchTerm.protocolName !=''">
+                AND guacamole_connection_history.protocol_name in
+                <foreach item="item" index="index" collection="recordAndSearchTerm.protocolName.split(',')" open="(" separator="," close=")">
+                    '${item}'
+                </foreach>
+            </if>
+            <if test="recordAndSearchTerm.guacadCloudEntryId != null and recordAndSearchTerm.guacadCloudEntryId !=''">
+                AND guacamole_connection_history.guacad_cloud_entry_id in
+                <foreach item="item" index="index" collection="recordAndSearchTerm.guacadCloudEntryId.split(',')" open="(" separator="," close=")">
+                    '${item}'
+                </foreach>
+            </if>
+        </if>
+
+        <foreach collection="terms" item="term"
+                 open=" AND " separator=" AND ">
+            (
+            guacamole_connection_history.ip_address like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+            OR
+            guacamole_connection_history.vm_name like concat('%',#{term.term,jdbcType=VARCHAR},'%')
+            )
+        </foreach>
+
+        <!-- Bind sort property enum values for sake of readability -->
+        <bind name="START_DATE" value="@org.apache.guacamole.net.auth.ActivityRecordSet$SortableProperty@START_DATE"/>
+
+        <!-- Sort predicates -->
+        <foreach collection="sortPredicates" item="sortPredicate"
+                 open="ORDER BY " separator=", ">
+            <choose>
+                <when test="sortPredicate.property == START_DATE">guacamole_connection_history.start_date</when>
+                <otherwise>1</otherwise>
+            </choose>
+            <if test="sortPredicate.descending">DESC</if>
+        </foreach>
+    </select>
+
+
     <!-- Search for specific connection records -->
     <select id="searchReadable" resultMap="ConnectionRecordResultMap">
 
