@@ -27,12 +27,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class FileUtilService {
@@ -67,39 +71,40 @@ public class FileUtilService {
      * @param size
      * @throws IOException
      */
-    public void removeOverSizeFiles(String dirPath, long size) throws IOException {
+    public void removeOverSizeFiles(String dirPath, BigDecimal size) throws IOException {
         logger.info("Remove overSize files method start.dirPath:{},size:{}", dirPath, size);
         long startTime = System.currentTimeMillis();
-        Files.list(Paths.get(dirPath))
-                .forEach(path -> {
-                    if (!Files.isDirectory(path)) {
-                        return;
-                    }
-                    //Calculate the total size of the file and determine if it exceeds the size
-                    File[] files = new File(path.toString()).listFiles();
-                    if (filesSize(files) < size * 1024 * 1024) {
-                        return;
-                    }
-                    //Delete 20% of files that have not been used recently
-                    int removeFactor = (int) Math.ceil(0.2 * files.length);
-                    //Sort files by last modified time
-                    Arrays.sort(files, new FileLastModifiedSort());
-                    for (int i = 0; i < removeFactor; i++) {
-                        File tmp = files[i];
-                        if (!tmp.isFile()) {
-                            continue;
-                        }
-                        logger.info("Delete overSize file.path:{}", tmp.getAbsolutePath());
-                        try {
-                            tmp.delete();
-                            // updateFileStatus(tmp.getName());
-                            updateFileStatus("guacamole_video");
-                        } catch (Exception e) {
-                            //If it is a multi-node deletion, it exits with an error
-                            logger.info("Delete overSize file error.path:{}.error:{}", tmp.getAbsolutePath(), e.getMessage());
-                        }
-                    }
-                });
+        List<Path> pathList = Files.list(Paths.get(dirPath)).collect(Collectors.toList());
+        size = size.multiply(new BigDecimal(1024 * 1024));
+        for (Path path : pathList) {
+            if (!Files.isDirectory(path)) {
+                return;
+            }
+            //Calculate the total size of the file and determine if it exceeds the size
+            File[] files = new File(path.toString()).listFiles();
+            if (filesSize(files) < size.intValue()) {
+                return;
+            }
+            //Delete 20% of files that have not been used recently
+            int removeFactor = (int) Math.ceil(0.2 * files.length);
+            //Sort files by last modified time
+            Arrays.sort(files, new FileLastModifiedSort());
+            for (int i = 0; i < removeFactor; i++) {
+                File tmp = files[i];
+                if (!tmp.isFile()) {
+                    continue;
+                }
+                logger.info("Delete overSize file.path:{}", tmp.getAbsolutePath());
+                try {
+                    tmp.delete();
+                    // updateFileStatus(tmp.getName());
+                    updateFileStatus("guacamole_video");
+                } catch (Exception e) {
+                    //If it is a multi-node deletion, it exits with an error
+                    logger.info("Delete overSize file error.path:{}.error:{}", tmp.getAbsolutePath(), e.getMessage());
+                }
+            }
+        }
         logger.info("Remove overSize files method end.total time：[{}] millisecond", System.currentTimeMillis() - startTime);
     }
 
@@ -143,28 +148,29 @@ public class FileUtilService {
      * @param dirPath
      * @param day
      */
-    public void removeExpireFiles(String dirPath, long day) {
+    public void removeExpireFiles(String dirPath, BigDecimal day) {
         logger.info("Remove expire files start.dirPath:{},day:{}", dirPath, day);
+        day = day.multiply(new BigDecimal(24 * 60 * 60 * 1000));
         long startTime = System.currentTimeMillis();
         try {
-            long cutOff = System.currentTimeMillis() - (day * 24 * 60 * 60 * 1000);
-            Files.list(Paths.get(dirPath))
-                    .forEach(path -> {
-                        if (Files.isDirectory(path)) {
-                            removeExpireFiles(path.toString(), day);
-                        } else {
-                            try {
-                                long modifiedTime = Files.getLastModifiedTime(path).to(TimeUnit.MILLISECONDS);
-                                if (modifiedTime < cutOff) {
-                                    logger.info("Delete expire file.path:{}", path);
-                                    Files.delete(path);
-                                }
-                            } catch (Exception e) {
-                                //If it is a multi-node deletion, it exits with an error
-                                logger.info("Delete expire file path:{}. error:{}", path, e.getMessage());
-                            }
+            long cutOff = System.currentTimeMillis() - day.longValue();
+            List<Path> pathList = Files.list(Paths.get(dirPath)).collect(Collectors.toList());
+            for (Path path : pathList) {
+                if (Files.isDirectory(path)) {
+                    removeExpireFiles(path.toString(), day);
+                } else {
+                    try {
+                        long modifiedTime = Files.getLastModifiedTime(path).to(TimeUnit.MILLISECONDS);
+                        if (modifiedTime < cutOff) {
+                            logger.info("Delete expire file.path:{}", path);
+                            Files.delete(path);
                         }
-                    });
+                    } catch (Exception e) {
+                        //If it is a multi-node deletion, it exits with an error
+                        logger.info("Delete expire file path:{}. error:{}", path, e.getMessage());
+                    }
+                }
+            }
         } catch (IOException ex) {
             logger.error("Remove expire files error:{}", ex);
         }

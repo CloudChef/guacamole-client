@@ -49,15 +49,22 @@ public class DatasourceConfig {
     public DruidDataSource dataSource() {
         String username = "guacamole_user";
         String password = "guacamole_password";
-        String url = "jdbc:mysql://localhost/guacamole_db?useUnicode=true&characterEncoding=utf8&verifyServerCertificate=false&useSSL=false";
+        String mysqlhostname = "localhost";
+        String mysqldatabase = "guacamole_db";
+        String timeZone = "GMT%2B8";
+
         String guacaHome = System.getenv("GUACAMOLE_HOME");
         Properties properties = readProperties(guacaHome + File.separator + "guacamole.properties");
         if (properties != null) {
             username = (properties.getProperty("mysql-username") == null ? username : properties.getProperty("mysql-username"));
             password = (properties.getProperty("mysql-password") == null ? password : properties.getProperty("mysql-password"));
-            url = (properties.getProperty("url") == null ? url : properties.getProperty("url"));
-            logger.info("guacaHome properties.username:{},password:{},url:{}", username, password, url);
+            mysqlhostname = (properties.getProperty("mysql-hostname") == null ? mysqlhostname : properties.getProperty("mysql-hostname"));
+            mysqldatabase = (properties.getProperty("mysql-database") == null ? mysqldatabase : properties.getProperty("mysql-database"));
+            timeZone = (properties.getProperty("timeZone") == null ? timeZone : properties.getProperty("timeZone"));
+            logger.info("guacaHome properties.username:{},password:{},url:{}", username, password, mysqlhostname);
         }
+        String url = "jdbc:mysql://%s/%s?useUnicode=true&characterEncoding=utf8&verifyServerCertificate=false&useSSL=false&cachePrepStmts=true&serverTimezone=%s";
+        url = String.format(url,mysqlhostname,mysqldatabase,timeZone);
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUsername(username);
         druidDataSource.setPassword(password);

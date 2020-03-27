@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -58,7 +59,9 @@ public class DeletePlaybackVideoConfig implements SchedulingConfigurer {
         String retentionSize = System.getenv("ENV_PLAYBACK_VIDEO_MAX_RETENTION_SIZE");
         String cronStr = System.getenv("ENV_DELETE_PLAYBACK_SCHEDULE_CONFIG");
         logger.info("Delete playback video scheduled Config.guacamoleHome:{}.retentionSize:{}.cron:{}",guacamoleHome,retentionSize,cronStr);
-        this.setCron(cronStr);
+        if(StringUtils.isNotBlank(cronStr)){
+            this.setCron(cronStr);
+        }
     }
 
 
@@ -69,11 +72,11 @@ public class DeletePlaybackVideoConfig implements SchedulingConfigurer {
             public void run() {
                 long startTime = System.currentTimeMillis();
                 //Keep files by default for 180 days
-                long retentionDay = 180;
+                BigDecimal retentionDay = new BigDecimal(180);
                 //Default save path
                 String dirPath = "/opt/manager/resources/guacd";
                 //Keep files by default for Maximum size 10 GB
-                long maxRetentionSize = 10 * 1024;
+                BigDecimal maxRetentionSize = new BigDecimal(10 * 1024);
 
                 String dirPathStr = System.getenv("ENV_GUACAMOLE_RECORD_PATH");
                 String maxRetentionDayStr = System.getenv("ENV_PLAYBACK_VIDEO_MAX_RETENTION_DAY");
@@ -82,10 +85,10 @@ public class DeletePlaybackVideoConfig implements SchedulingConfigurer {
                     dirPath = dirPathStr;
                 }
                 if (StringUtils.isNotBlank(maxRetentionDayStr)) {
-                    retentionDay = Long.valueOf(maxRetentionDayStr);
+                    retentionDay = new BigDecimal(maxRetentionDayStr);
                 }
                 if (StringUtils.isNotBlank(maxRetentionSizeStr)) {
-                    maxRetentionSize = Long.valueOf(maxRetentionSizeStr);
+                    maxRetentionSize = new BigDecimal(maxRetentionSizeStr);
                 }
                 logger.info("Delete playback video scheduled task start.dirPath:{}.retentionDay:{}.maxRetentionSize:{}",dirPath,retentionDay,maxRetentionSize);
                 try {
