@@ -286,7 +286,7 @@ public class TunnelRequestService {
 
                 try {
 
-                    // Close and clean up tunnel
+                    // Close and removeExpireFiles up tunnel
                     session.removeTunnel(getUUID().toString());
                     super.close();
 
