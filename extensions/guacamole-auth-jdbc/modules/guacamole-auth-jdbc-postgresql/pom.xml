@@ -53,7 +53,7 @@
                     <target>1.8</target>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
-                        <arg>-Werror</arg>
+                        <arg></arg>
                     </compilerArgs>
                     <fork>true</fork>
                 </configuration>
