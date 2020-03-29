@@ -77,7 +77,6 @@ public class DeletePlaybackVideoConfig implements SchedulingConfigurer {
                 String dirPath = "/opt/manager/resources/guacd";
                 //Keep files by default for Maximum size 10 GB
                 BigDecimal maxRetentionSize = new BigDecimal(10 * 1024);
-
                 String dirPathStr = System.getenv("ENV_GUACAMOLE_RECORD_PATH");
                 String maxRetentionDayStr = System.getenv("ENV_PLAYBACK_VIDEO_MAX_RETENTION_DAY");
                 String maxRetentionSizeStr = System.getenv("ENV_PLAYBACK_VIDEO_MAX_RETENTION_SIZE");

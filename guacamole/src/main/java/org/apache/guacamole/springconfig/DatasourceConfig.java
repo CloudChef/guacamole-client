@@ -52,7 +52,6 @@ public class DatasourceConfig {
         String mysqlhostname = "localhost";
         String mysqldatabase = "guacamole_db";
         String timeZone = "GMT%2B8";
-
         String guacaHome = System.getenv("GUACAMOLE_HOME");
         Properties properties = readProperties(guacaHome + File.separator + "guacamole.properties");
         if (properties != null) {
