@@ -154,6 +154,7 @@ public class FileUtilService {
      */
     public void removeExpireFiles(String dirPath, BigDecimal day) {
         logger.info("Remove expire files start.dirPath:{},day:{}", dirPath, day);
+        day = day.multiply(new BigDecimal(24 * 60 * 60 * 1000));
         long startTime = System.currentTimeMillis();
         try {
             long cutOff = System.currentTimeMillis() - day.multiply(new BigDecimal(24 * 60 * 60 * 1000)).longValue();
