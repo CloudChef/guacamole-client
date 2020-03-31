@@ -49,6 +49,7 @@ public class FileUtilService {
 
     public void updateFileStatus(String fileName) {
         try {
+            logger.info("Update file status fileName:{}", fileName);
             Map<String, Object> dataMap = jdbcTemplate.queryForMap("select connection_id,exts from  guacamole_connection_history where recording_name= ?", new Object[]{fileName});
             if (dataMap == null || dataMap.get("exts") == null || dataMap.get("exts").equals("")) {
                 return;
@@ -58,6 +59,7 @@ public class FileUtilService {
             Map<String, Object> tmpMap = mapper.readValue(exts, Map.class);
             tmpMap.put("recordIsDeleted", true);
             jdbcTemplate.update("update guacamole_connection_history set exts = ? where recording_name= ?", new Object[]{mapper.writeValueAsString(tmpMap), fileName});
+            logger.info("Update file status success.sql:fileName:{}.exts:{}", fileName, exts);
         } catch (Exception e) {
             logger.error("save connection record method.error:{}", e.getMessage());
         }
@@ -78,12 +80,14 @@ public class FileUtilService {
         size = size.multiply(new BigDecimal(1024 * 1024));
         for (Path path : pathList) {
             if (!Files.isDirectory(path)) {
-                return;
+                logger.info("Remove overSize files method isDirectory return.Path:{}", path.toString());
+                continue;
             }
             //Calculate the total size of the file and determine if it exceeds the size
             File[] files = new File(path.toString()).listFiles();
-            if (filesSize(files) < size.intValue()) {
-                return;
+            if (filesSize(files) < size.doubleValue()) {
+                logger.info("The current file size is smaller than the specified size.Current file size:{}.specified size:{}", filesSize(files),size.intValue());
+                continue;
             }
             //Delete 20% of files that have not been used recently
             int removeFactor = (int) Math.ceil(0.2 * files.length);
@@ -92,13 +96,13 @@ public class FileUtilService {
             for (int i = 0; i < removeFactor; i++) {
                 File tmp = files[i];
                 if (!tmp.isFile()) {
+                    logger.info("File is Directory continue.path:{}", tmp.getAbsolutePath());
                     continue;
                 }
                 logger.info("Delete overSize file.path:{}", tmp.getAbsolutePath());
                 try {
                     tmp.delete();
-                    // updateFileStatus(tmp.getName());
-                    updateFileStatus("guacamole_video");
+                    updateFileStatus(tmp.getName());
                 } catch (Exception e) {
                     //If it is a multi-node deletion, it exits with an error
                     logger.info("Delete overSize file error.path:{}.error:{}", tmp.getAbsolutePath(), e.getMessage());
@@ -153,7 +157,7 @@ public class FileUtilService {
         day = day.multiply(new BigDecimal(24 * 60 * 60 * 1000));
         long startTime = System.currentTimeMillis();
         try {
-            long cutOff = System.currentTimeMillis() - day.longValue();
+            long cutOff = System.currentTimeMillis() - day.multiply(new BigDecimal(24 * 60 * 60 * 1000)).longValue();
             List<Path> pathList = Files.list(Paths.get(dirPath)).collect(Collectors.toList());
             for (Path path : pathList) {
                 if (Files.isDirectory(path)) {
@@ -164,6 +168,7 @@ public class FileUtilService {
                         if (modifiedTime < cutOff) {
                             logger.info("Delete expire file.path:{}", path);
                             Files.delete(path);
+                            updateFileStatus(path.getFileName().toString());
                         }
                     } catch (Exception e) {
                         //If it is a multi-node deletion, it exits with an error
