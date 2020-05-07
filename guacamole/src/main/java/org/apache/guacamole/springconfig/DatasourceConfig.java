@@ -58,12 +58,10 @@ public class DatasourceConfig {
             username = (properties.getProperty("mysql-username") == null ? username : properties.getProperty("mysql-username"));
             password = (properties.getProperty("mysql-password") == null ? password : properties.getProperty("mysql-password"));
             mysqlhostname = (properties.getProperty("mysql-hostname") == null ? mysqlhostname : properties.getProperty("mysql-hostname"));
-            mysqldatabase = (properties.getProperty("mysql-database") == null ? mysqldatabase : properties.getProperty("mysql-database"));
-            timeZone = (properties.getProperty("timeZone") == null ? timeZone : properties.getProperty("timeZone"));
-            logger.info("guacaHome properties.username:{},password:{},url:{}", username, password, mysqlhostname);
+            logger.info("guacaHome properties.username:{},password:{},hostname:{}", username, password, mysqlhostname);
         }
-        String url = "jdbc:mysql://%s/%s?useUnicode=true&characterEncoding=utf8&verifyServerCertificate=false&useSSL=false&cachePrepStmts=true&serverTimezone=%s";
-        url = String.format(url,mysqlhostname,mysqldatabase,timeZone);
+        String url = properties.getProperty("mysql-url");
+        logger.info("Datasource config url:",url);
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUsername(username);
         druidDataSource.setPassword(password);
